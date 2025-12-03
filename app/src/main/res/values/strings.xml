@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Android_assignment</string>
+    <string name="notifications">Notifications</string>
+    <string name="profile">Profile</string>
+    <string name="chat">Chat</string>
+    <string name="export_state">Export State</string>
+    <string name="done">Done</string>
+    <string name="share_to_instagram_stories">Share to Instagram Stories</string>
+    <string name="notification_permission_title">Notification Permission</string>
+    <string name="notification_permission_message">Please allow notifications to receive updates.</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+    <string name="default_notification_channel_id">soundverse_notifications</string>
+</resources>
