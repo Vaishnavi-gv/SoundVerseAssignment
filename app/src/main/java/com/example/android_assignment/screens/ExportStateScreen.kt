@@ -22,9 +22,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -32,6 +34,7 @@ import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import com.example.android_assignment.R
 import com.example.android_assignment.ui.theme.SoundversePrimary
+import com.example.android_assignment.ui.theme.buttonPrimary
 import java.io.File
 import java.io.FileOutputStream
 
@@ -88,29 +91,35 @@ fun ExportStateScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            // Title
             Text(
                 text = "Ready to share",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
-            Spacer(modifier = Modifier.height(10.dp))
 
-            // Preview Card with Video
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = "Saved to device and your library",
+                color = Color(0xFFCCCCCC),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Box(
                 modifier = Modifier
-                    .width(210.dp)
-                    .height(200.dp)
+                    .width(180.dp)
+                    .height(340.dp)
                     .scale(previewScale)
                     .clip(RoundedCornerShape(22.dp))
                     .background(Color(0xFF15152E)),
                 contentAlignment = Alignment.Center
             ) {
-
-                val context = LocalContext.current
 
                 AndroidView(
                     modifier = Modifier.fillMaxSize(),
@@ -121,7 +130,7 @@ fun ExportStateScreen(navController: NavController) {
                             )
                             setOnPreparedListener { mp ->
                                 mp.isLooping = true
-                                mp.setVolume(0f, 0f)   // mute preview
+                                mp.setVolume(0f, 0f)
                                 start()
                             }
                         }
@@ -131,7 +140,6 @@ fun ExportStateScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(28.dp))
 
-            // Instagram Button
             ActionShareButton(
                 label = "Share to Instagram Stories",
                 icon = R.drawable.ic_instagram,
@@ -159,35 +167,51 @@ fun ExportStateScreen(navController: NavController) {
                         context.startActivity(fallback)
                     }
                 }
-
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // WhatsApp Button
             ActionShareButton(
-                label = "Share to Whatsapp",
+                label = "Share to WhatsApp",
                 icon = R.drawable.ic_whatsapp,
                 onClick = {}
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
-            // Bottom Row of Icons
             Row(
-                horizontalArrangement = Arrangement.spacedBy(32.dp)
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                ShareIcon(R.drawable.ic_instagram)
-                ShareIcon(R.drawable.ic_whatsapp)
-                ShareIcon(R.drawable.ic_facebook)
-                ShareIcon(R.drawable.ic_more)
+                ShareIconWithLabel(
+                    icon = R.drawable.ic_instagram,
+                    label = "Instagram",
+                    packageName = "com.instagram.android"
+                )
+
+                ShareIconWithLabel(
+                    icon = R.drawable.ic_whatsapp,
+                    label = "Whatsapp",
+                    packageName = "com.whatsapp"
+                )
+
+                ShareIconWithLabel(
+                    icon = R.drawable.ic_facebook,
+                    label = "Facebook",
+                    packageName = "com.facebook.katana"
+                )
+
+                ShareIconWithLabel(
+                    icon = R.drawable.ic_more,
+                    label = "Other",
+                    packageName = null
+                )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(modifier = Modifier.weight(1f))
 
             // Done Button
-            Spacer(modifier = Modifier.weight(1f))  // Push everything upward
-
             Button(
                 onClick = {
                     navController.navigate("notifications") {
@@ -195,24 +219,21 @@ fun ExportStateScreen(navController: NavController) {
                     }
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 54.dp)  // adaptive height, supports all phones
+                    .wrapContentSize()
                     .padding(bottom = 12.dp)
+                    .padding(horizontal = 20.dp)
                     .navigationBarsPadding(),
                 shape = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = SoundversePrimary
+                    containerColor = buttonPrimary
                 )
             ) {
                 Text(
                     text = "Done",
-                    fontSize = 17.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.SemiBold
                 )
             }
-
-
-
         }
     }
 }
@@ -223,7 +244,8 @@ fun ActionShareButton(label: String, icon: Int, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp),
+            .height(40.dp)
+            .padding(horizontal = 20.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF784BFF)
@@ -232,79 +254,76 @@ fun ActionShareButton(label: String, icon: Int, onClick: () -> Unit) {
         Image(
             painter = painterResource(id = icon),
             contentDescription = null,
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier.size(20.dp)
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = label,
-            fontSize = 16.sp,
+            fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold
         )
     }
 }
-
 @Composable
-fun ShareIcon(icon: Int) {
+fun ShareIconWithLabel(icon: Int, label: String, packageName: String?) {
     val context = LocalContext.current
 
-    val packageName = when (icon) {
-        R.drawable.ic_instagram -> "com.instagram.android"
-        R.drawable.ic_facebook -> "com.facebook.katana"
-        R.drawable.ic_whatsapp -> "com.google.android.youtube"
-        R.drawable.ic_more -> null  // system share
-        else -> null
-    }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-    Box(
-        modifier = Modifier
-            .size(55.dp)
-            .clip(CircleShape)
-            .background(Color(0xFF151428))
-            .clickable {
-                try {
-                    if (packageName == null) {
-                        // Show Android share sheet for "More"
-                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                            type = "text/plain"
-                            putExtra(Intent.EXTRA_TEXT, "Check this out!")
-                        }
-                        context.startActivity(
-                            Intent.createChooser(shareIntent, "Share using")
-                        )
-                    } else {
-                        // App launch intent
-                        val intent = context.packageManager.getLaunchIntentForPackage(packageName)
-                        if (intent != null) {
-                            context.startActivity(intent)
-                        } else {
-                            // App not installed → open website fallback
-                            val url = when (icon) {
-                                R.drawable.ic_instagram -> "https://www.instagram.com"
-                                R.drawable.ic_facebook -> "https://www.facebook.com"
-                                R.drawable.ic_whatsapp -> "https://www.whatsapp.com"
-                                else -> "https://google.com"
+        // ICON
+        Box(
+            modifier = Modifier
+                .size(21.dp)
+                .clickable {
+                    try {
+                        if (packageName == null) {
+                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, "Check this out!")
                             }
                             context.startActivity(
-                                Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                Intent.createChooser(shareIntent, "Share using")
                             )
+                        } else {
+                            val intent = context.packageManager.getLaunchIntentForPackage(packageName)
+                            if (intent != null) {
+                                context.startActivity(intent)
+                            } else {
+                                val url = when (label) {
+                                    "Instagram" -> "https://www.instagram.com"
+                                    "Whatsapp" -> "https://www.whatsapp.com"
+                                    "Facebook" -> "https://www.facebook.com"
+                                    else -> "https://google.com"
+                                }
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                            }
                         }
-                    }
-                } catch (e: Exception) {
-                    // Safety fallback
-                    context.startActivity(
-                        Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com"))
-                    )
-                }
-            },
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = icon),
-            contentDescription = null,
-            modifier = Modifier.size(26.dp)
+                    } catch (_: Exception) { }
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = icon),
+                contentDescription = label,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = label,
+            color = Color.White,
+            fontSize = 11.sp,
+            textAlign = TextAlign.Center
         )
     }
 }
+
+
 
 fun copyRawVideoToCache(context: Context, rawId: Int): Uri {
     val inputStream = context.resources.openRawResource(rawId)

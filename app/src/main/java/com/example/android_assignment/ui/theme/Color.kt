@@ -11,4 +11,5 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val SoundversePrimary = Color(0xFF6366F1)
+val buttonPrimary=Color(0xFF3D2873)
 
